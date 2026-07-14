@@ -5,12 +5,15 @@
   --ink-soft:#232E3A;
   --paper:#EEF1F0;
   --paper-raised:#FFFFFF;
-  --amber:#E2A33B;
-  --teal:#2F6F6B;
+  --violet:#7B2FF7;
+  --magenta:#E91E8C;
+  --amber:#FF8A3D;
+  --teal:#E91E8C;
   --text-main:#17202A;
   --text-muted:#5B6572;
   --border:#DADFDD;
-  --error:#B3452F;
+  --error:#DC2626;
+  --brand-gradient: linear-gradient(90deg, var(--violet) 0%, var(--magenta) 50%, var(--amber) 100%);
 }
 *{box-sizing:border-box;}
 body{
@@ -47,8 +50,8 @@ body{
   content:'';
   width:10px;
   height:10px;
-  border-radius:2px;
-  background:var(--amber);
+  border-radius:3px;
+  background:var(--brand-gradient);
   display:inline-block;
 }
 .back-link{
@@ -80,7 +83,7 @@ body{
   content:'';
   width:18px;
   height:2px;
-  background:var(--amber);
+  background:var(--brand-gradient);
   display:inline-block;
 }
 h1{
@@ -137,7 +140,9 @@ button.primary{
   margin-top:8px;
   width:100%;
   padding:15px;
-  background:var(--ink);
+  background:var(--brand-gradient);
+  background-size:200% 100%;
+  background-position:0% 0%;
   color:#fff;
   border:none;
   border-radius:8px;
@@ -145,9 +150,9 @@ button.primary{
   font-weight:600;
   font-size:15px;
   cursor:pointer;
-  transition:background .15s ease, transform .1s ease;
+  transition:background-position .3s ease, transform .1s ease;
 }
-button.primary:hover{ background:var(--ink-soft); }
+button.primary:hover{ background-position:100% 0%; }
 button.primary:active{ transform:scale(0.99); }
 button.primary:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
 
@@ -216,9 +221,50 @@ button.primary:focus-visible{ outline:2px solid var(--amber); outline-offset:2px
 }
 footer{
   margin-top:20px;
+}
+
+/* --- Brand footer --- */
+.brand-footer{
+  margin-top:40px;
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:30px 24px 24px;
   text-align:center;
+}
+.brand-footer img{
+  height:34px;
+  display:block;
+  margin:0 auto 16px;
+}
+.brand-footer .app-name{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:0.06em;
+  color:var(--ink);
+  margin:0 0 4px;
+}
+.brand-footer .ver{
+  color:var(--text-muted);
+  font-weight:400;
+}
+.brand-footer .line{
+  font-family:'JetBrains Mono',monospace;
   font-size:12px;
   color:var(--text-muted);
+  margin:4px 0;
+}
+.brand-footer a{
+  color:var(--teal);
+  font-weight:700;
+  text-decoration:none;
+}
+.brand-footer a:hover{
+  text-decoration:underline;
+}
+.brand-footer .copyright a{
+  color:var(--teal);
 }
 
 /* --- Landing page specific --- */
