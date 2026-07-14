@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age Calculator — Age_BMI_Loan Convertor</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page">
+  <div class="topnav">
+    <a class="brand" href="index.html">AGE_BMI_LOAN CONVERTOR</a>
+    <a class="back-link" href="index.html">← All tools</a>
+  </div>
+
+  <div class="eyebrow">Time</div>
+  <h1>How old are you, exactly?</h1>
+  <p class="sub">Enter a date of birth to get your precise age — down to the day, and everything counted in between.</p>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="dob">Date of birth</label>
+        <input type="date" id="dob">
+      </div>
+      <div>
+        <label for="asof">Calculate as of</label>
+        <input type="date" id="asof">
+      </div>
+    </div>
+    <button class="primary" id="calcBtn">Calculate age</button>
+
+    <p class="error" id="errorMsg">Please choose a valid date of birth that isn't in the future.</p>
+
+    <div class="result" id="result">
+      <p class="headline-stat">You are <span id="mainAge">—</span> old.</p>
+      <div class="stat-strip">
+        <div class="stat"><span class="num" id="statYears">0</span><span class="lbl">Years</span></div>
+        <div class="stat"><span class="num" id="statMonths">0</span><span class="lbl">Months</span></div>
+        <div class="stat"><span class="num" id="statWeeks">0</span><span class="lbl">Weeks</span></div>
+        <div class="stat"><span class="num" id="statDays">0</span><span class="lbl">Days</span></div>
+        <div class="stat"><span class="num" id="statHours">0</span><span class="lbl">Hours</span></div>
+      </div>
+      <p class="note" id="nextBday"></p>
+    </div>
+  </div>
+
+  <footer class="brand-footer">
+    <img src="assets/dev-logo.jpeg" alt="Devntric logo" height="50" width="200">
+    <p class="app-name">AGE_BMI_LOAN CONVERTOR <span class="ver">v1.0.0</span></p>
+    <p class="line">Developed by <a href="https://www.linkedin.com/in/mustafij55" target="_blank" rel="noopener">Mustafij Ahmed Ovi</a></p>
+    <p class="line copyright">© 2026 All Rights Reserved. <a href="https://devntric.com/">Devntric</a></p>
+  </footer>
+</div>
+
+<script>
+  const dobInput = document.getElementById('dob');
+  const asofInput = document.getElementById('asof');
+  const calcBtn = document.getElementById('calcBtn');
+  const result = document.getElementById('result');
+  const errorMsg = document.getElementById('errorMsg');
+
+  const today = new Date();
+  asofInput.valueAsDate = today;
+  dobInput.max = today.toISOString().split('T')[0];
+
+  function animateCount(el, target, duration=600){
+    const start = 0;
+    const startTime = performance.now();
+    function tick(now){
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1-progress, 3);
+      el.textContent = Math.round(start + (target-start)*eased).toLocaleString();
+      if(progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  calcBtn.addEventListener('click', () => {
+    const dobVal = dobInput.value;
+    const asofVal = asofInput.value || today.toISOString().split('T')[0];
+
+    if(!dobVal){
+      errorMsg.style.display = 'block';
+      errorMsg.textContent = 'Please choose a date of birth.';
+      result.classList.remove('show');
+      return;
+    }
+
+    const dob = new Date(dobVal + 'T00:00:00');
+    const asof = new Date(asofVal + 'T00:00:00');
+
+    if(dob > asof){
+      errorMsg.style.display = 'block';
+      errorMsg.textContent = "Please choose a valid date of birth that isn't in the future.";
+      result.classList.remove('show');
+      return;
+    }
+    errorMsg.style.display = 'none';
+
+    let years = asof.getFullYear() - dob.getFullYear();
+    let months = asof.getMonth() - dob.getMonth();
+    let days = asof.getDate() - dob.getDate();
+
+    if(days < 0){
+      months -= 1;
+      const prevMonth = new Date(asof.getFullYear(), asof.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if(months < 0){
+      years -= 1;
+      months += 12;
+    }
+
+    const msDiff = asof - dob;
+    const totalDays = Math.floor(msDiff / (1000*60*60*24));
+    const totalWeeks = Math.floor(totalDays / 7);
+    const totalMonths = years*12 + months;
+    const totalHours = Math.floor(msDiff / (1000*60*60));
+
+    document.getElementById('mainAge').textContent = `${years} year${years!==1?'s':''}, ${months} month${months!==1?'s':''}, ${days} day${days!==1?'s':''}`;
+
+    animateCount(document.getElementById('statYears'), years);
+    animateCount(document.getElementById('statMonths'), totalMonths);
+    animateCount(document.getElementById('statWeeks'), totalWeeks);
+    animateCount(document.getElementById('statDays'), totalDays);
+    animateCount(document.getElementById('statHours'), totalHours);
+
+    let nextBday = new Date(asof.getFullYear(), dob.getMonth(), dob.getDate());
+    if(nextBday < asof){
+      nextBday = new Date(asof.getFullYear()+1, dob.getMonth(), dob.getDate());
+    }
+    const daysToBday = Math.ceil((nextBday - asof) / (1000*60*60*24));
+    document.getElementById('nextBday').textContent =
+      daysToBday === 0 ? "🎉 It's your birthday today!" : `${daysToBday} day${daysToBday!==1?'s':''} until your next birthday.`;
+
+    result.classList.add('show');
+  });
+</script>
+
+</body>
+</html>

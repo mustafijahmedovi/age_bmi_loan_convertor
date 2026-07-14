@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Calculator — Age_BMI_Loan Convertor</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .bmi-scale{
+    margin-top:24px;
+    height:10px;
+    border-radius:6px;
+    background:linear-gradient(to right, #5B8FC7 0%, #5B8FC7 18.5%, var(--teal) 18.5%, var(--teal) 41%, var(--amber) 41%, var(--amber) 62%, var(--error) 62%, var(--error) 100%);
+    position:relative;
+  }
+  .bmi-marker{
+    position:absolute;
+    top:-6px;
+    width:2px;
+    height:22px;
+    background:var(--ink);
+    transition:left .5s ease;
+  }
+  .bmi-legend{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--text-muted);
+    margin-top:8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="topnav">
+    <a class="brand" href="index.html">AGE_BMI_LOAN CONVERTOR</a>
+    <a class="back-link" href="index.html">← All tools</a>
+  </div>
+
+  <div class="eyebrow">Health</div>
+  <h1>What's your BMI?</h1>
+  <p class="sub">Enter your height and weight to calculate your Body Mass Index and see which range it falls in.</p>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="unit">Units</label>
+        <select id="unit">
+          <option value="metric">Metric (cm / kg)</option>
+          <option value="imperial">Imperial (in / lb)</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="height" id="heightLabel">Height (cm)</label>
+        <input type="number" id="height" placeholder="e.g. 170" min="0" step="0.1">
+      </div>
+      <div>
+        <label for="weight" id="weightLabel">Weight (kg)</label>
+        <input type="number" id="weight" placeholder="e.g. 65" min="0" step="0.1">
+      </div>
+    </div>
+    <button class="primary" id="calcBtn">Calculate BMI</button>
+
+    <p class="error" id="errorMsg">Please enter valid height and weight values.</p>
+
+    <div class="result" id="result">
+      <p class="headline-stat">Your BMI is <span id="bmiValue">—</span></p>
+
+      <div class="stat-strip">
+        <div class="stat"><span class="num" id="bmiCategory">—</span><span class="lbl">Category</span></div>
+        <div class="stat"><span class="num" id="healthyMin">—</span><span class="lbl">Healthy Min (kg)</span></div>
+        <div class="stat"><span class="num" id="healthyMax">—</span><span class="lbl">Healthy Max (kg)</span></div>
+      </div>
+
+      <div class="bmi-scale">
+        <div class="bmi-marker" id="bmiMarker" style="left:0%"></div>
+      </div>
+      <div class="bmi-legend">
+        <span>Underweight</span>
+        <span>Normal</span>
+        <span>Overweight</span>
+        <span>Obese</span>
+      </div>
+
+      <p class="note">BMI is a general screening measure and doesn't account for muscle mass, bone density, or body composition. For personal health guidance, consult a doctor.</p>
+    </div>
+  </div>
+
+  <footer class="brand-footer">
+    <img src="assets/dev-logo.jpeg" alt="Devntric logo" height="50" width="200">
+    <p class="app-name">AGE_BMI_LOAN CONVERTOR <span class="ver">v1.0.0</span></p>
+    <p class="line">Developed by <a href="https://www.linkedin.com/in/mustafij55" target="_blank" rel="noopener">Mustafij Ahmed Ovi</a></p>
+    <p class="line copyright">© 2026 All Rights Reserved. <a href="https://devntric.com/">Devntric</a></p>
+  </footer>
+</div>
+
+<script>
+  const unitSelect = document.getElementById('unit');
+  const heightLabel = document.getElementById('heightLabel');
+  const weightLabel = document.getElementById('weightLabel');
+  const heightInput = document.getElementById('height');
+  const weightInput = document.getElementById('weight');
+  const calcBtn = document.getElementById('calcBtn');
+  const result = document.getElementById('result');
+  const errorMsg = document.getElementById('errorMsg');
+
+  unitSelect.addEventListener('change', () => {
+    if(unitSelect.value === 'metric'){
+      heightLabel.textContent = 'Height (cm)';
+      weightLabel.textContent = 'Weight (kg)';
+      heightInput.placeholder = 'e.g. 170';
+      weightInput.placeholder = 'e.g. 65';
+    } else {
+      heightLabel.textContent = 'Height (in)';
+      weightLabel.textContent = 'Weight (lb)';
+      heightInput.placeholder = 'e.g. 67';
+      weightInput.placeholder = 'e.g. 143';
+    }
+  });
+
+  function categoryFor(bmi){
+    if(bmi < 18.5) return {label:'Underweight', pct: (bmi/18.5)*18.5};
+    if(bmi < 25) return {label:'Normal', pct: null};
+    if(bmi < 30) return {label:'Overweight', pct: null};
+    return {label:'Obese', pct: null};
+  }
+
+  function markerPosition(bmi){
+    // Scale: 0-15 underweight start, cap display range 10 to 40
+    const min = 10, max = 40;
+    let pct = ((bmi - min) / (max - min)) * 100;
+    pct = Math.max(0, Math.min(100, pct));
+    return pct;
+  }
+
+  calcBtn.addEventListener('click', () => {
+    let h = parseFloat(heightInput.value);
+    let w = parseFloat(weightInput.value);
+
+    if(!h || !w || h <= 0 || w <= 0){
+      errorMsg.style.display = 'block';
+      result.classList.remove('show');
+      return;
+    }
+    errorMsg.style.display = 'none';
+
+    let heightM, weightKg;
+    if(unitSelect.value === 'metric'){
+      heightM = h / 100;
+      weightKg = w;
+    } else {
+      heightM = h * 0.0254;
+      weightKg = w * 0.453592;
+    }
+
+    const bmi = weightKg / (heightM * heightM);
+    const cat = categoryFor(bmi);
+
+    const healthyMinKg = 18.5 * heightM * heightM;
+    const healthyMaxKg = 24.9 * heightM * heightM;
+
+    let healthyMinDisplay, healthyMaxDisplay;
+    if(unitSelect.value === 'metric'){
+      healthyMinDisplay = healthyMinKg.toFixed(1);
+      healthyMaxDisplay = healthyMaxKg.toFixed(1);
+    } else {
+      healthyMinDisplay = (healthyMinKg / 0.453592).toFixed(1);
+      healthyMaxDisplay = (healthyMaxKg / 0.453592).toFixed(1);
+    }
+
+    document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+    document.getElementById('bmiCategory').textContent = cat.label;
+    document.getElementById('healthyMin').textContent = healthyMinDisplay;
+    document.getElementById('healthyMax').textContent = healthyMaxDisplay;
+
+    document.getElementById('bmiMarker').style.left = markerPosition(bmi) + '%';
+
+    result.classList.add('show');
+  });
+</script>
+
+</body>
+</html>

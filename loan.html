@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan / EMI Calculator — Age_BMI_Loan Convertor</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .bar-wrap{
+    margin-top:24px;
+  }
+  .bar{
+    display:flex;
+    height:32px;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .bar .principal{ background:var(--teal); }
+  .bar .interest{ background:var(--amber); }
+  .bar-legend{
+    display:flex;
+    gap:20px;
+    margin-top:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--text-muted);
+  }
+  .bar-legend span{ display:flex; align-items:center; gap:6px; }
+  .dot{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+  .dot.p{ background:var(--teal); }
+  .dot.i{ background:var(--amber); }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="topnav">
+    <a class="brand" href="index.html">AGE_BMI_LOAN CONVERTOR</a>
+    <a class="back-link" href="index.html">← All tools</a>
+  </div>
+
+  <div class="eyebrow">Finance</div>
+  <h1>What will your loan actually cost?</h1>
+  <p class="sub">Enter the loan amount, interest rate, and term to see your monthly installment, total interest, and total repayment.</p>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="principal">Loan amount</label>
+        <input type="number" id="principal" placeholder="e.g. 500000" min="0" step="1">
+      </div>
+      <div>
+        <label for="rate">Annual interest rate (%)</label>
+        <input type="number" id="rate" placeholder="e.g. 9.5" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="tenure">Loan tenure</label>
+        <input type="number" id="tenure" placeholder="e.g. 5" min="0" step="1">
+      </div>
+      <div>
+        <label for="tenureUnit">Tenure unit</label>
+        <select id="tenureUnit">
+          <option value="years">Years</option>
+          <option value="months">Months</option>
+        </select>
+      </div>
+    </div>
+    <button class="primary" id="calcBtn">Calculate EMI</button>
+
+    <p class="error" id="errorMsg">Please enter valid loan amount, rate, and tenure.</p>
+
+    <div class="result" id="result">
+      <p class="headline-stat">Monthly EMI: <span id="emiValue">—</span></p>
+
+      <div class="stat-strip">
+        <div class="stat"><span class="num" id="totalInterest">0</span><span class="lbl">Total Interest</span></div>
+        <div class="stat"><span class="num" id="totalPayment">0</span><span class="lbl">Total Repayment</span></div>
+        <div class="stat"><span class="num" id="numPayments">0</span><span class="lbl">No. of EMIs</span></div>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar">
+          <div class="principal" id="barPrincipal" style="width:50%"></div>
+          <div class="interest" id="barInterest" style="width:50%"></div>
+        </div>
+        <div class="bar-legend">
+          <span><span class="dot p"></span> Principal</span>
+          <span><span class="dot i"></span> Interest</span>
+        </div>
+      </div>
+
+      <p class="note">Calculated using standard reducing-balance EMI formula. Actual figures may vary slightly by lender.</p>
+    </div>
+  </div>
+
+  <footer class="brand-footer">
+    <img src="assets/dev-logo.jpeg" alt="Devntric logo" height="50" width="200">
+    <p class="app-name">AGE_BMI_LOAN CONVERTOR <span class="ver">v1.0.0</span></p>
+    <p class="line">Developed by <a href="https://www.linkedin.com/in/mustafij55" target="_blank" rel="noopener">Mustafij Ahmed Ovi</a></p>
+    <p class="line copyright">© 2026 All Rights Reserved. <a href="https://devntric.com/">Devntric</a></p>
+  </footer>
+</div>
+
+<script>
+  const principalInput = document.getElementById('principal');
+  const rateInput = document.getElementById('rate');
+  const tenureInput = document.getElementById('tenure');
+  const tenureUnit = document.getElementById('tenureUnit');
+  const calcBtn = document.getElementById('calcBtn');
+  const result = document.getElementById('result');
+  const errorMsg = document.getElementById('errorMsg');
+
+  function formatMoney(num){
+    return num.toLocaleString(undefined, {maximumFractionDigits:0});
+  }
+
+  calcBtn.addEventListener('click', () => {
+    const P = parseFloat(principalInput.value);
+    const annualRate = parseFloat(rateInput.value);
+    let n = parseFloat(tenureInput.value);
+
+    if(!P || P <= 0 || annualRate < 0 || !n || n <= 0){
+      errorMsg.style.display = 'block';
+      result.classList.remove('show');
+      return;
+    }
+    errorMsg.style.display = 'none';
+
+    const months = tenureUnit.value === 'years' ? n * 12 : n;
+    const r = (annualRate / 100) / 12;
+
+    let emi;
+    if(r === 0){
+      emi = P / months;
+    } else {
+      emi = P * r * Math.pow(1+r, months) / (Math.pow(1+r, months) - 1);
+    }
+
+    const totalPayment = emi * months;
+    const totalInterest = totalPayment - P;
+
+    document.getElementById('emiValue').textContent = formatMoney(emi);
+    document.getElementById('totalInterest').textContent = formatMoney(totalInterest);
+    document.getElementById('totalPayment').textContent = formatMoney(totalPayment);
+    document.getElementById('numPayments').textContent = Math.round(months);
+
+    const principalPct = (P / totalPayment) * 100;
+    const interestPct = 100 - principalPct;
+    document.getElementById('barPrincipal').style.width = principalPct + '%';
+    document.getElementById('barInterest').style.width = interestPct + '%';
+
+    result.classList.add('show');
+  });
+</script>
+
+</body>
+</html>
