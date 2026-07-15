@@ -320,10 +320,10 @@ body.landing::after{
   gap:12px;
 }
 .brand-icon-badge{
-  width:38px;
-  height:38px;
+  width:28px;
+  height:28px;
   border-radius:11px;
-  background:linear-gradient(135deg, #EEF1F0, var(--violet));
+  background:linear-gradient(135deg, #1a211f);
   display:flex;
   align-items:center;
   justify-content:center;
