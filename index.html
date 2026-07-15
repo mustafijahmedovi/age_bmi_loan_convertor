@@ -6,45 +6,60 @@
 <title>LifeCalc</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="landing">
 
-<div class="page">
+<div class="page landing-page">
   <div class="topnav">
-    <span class="brand">LifeCalc</span>
+    <span class="brand badge-brand">
+      <span class="brand-icon-badge" style="font-size:20px;">📅</span>
+      LIFECALC <span class="brand-tagline">(Age · BMI · Loan)</span>
+    </span>
   </div>
 
   <div class="hero">
-    <div class="eyebrow">Everyday Using</div>
-    <h1>Pick a tool to get started.</h1>
-    <p class="sub">Three quick calculators for everyday numbers of age, body mass index, and loan repayments. No sign-up, no clutter, just the answer.</p>
+    <div class="eyebrow">Everyday Toolkit</div>
+    <h1>Pick a tool to<br><span class="accent">get started.</span></h1>
+    <p class="sub">Quick tools for everyday numbers — age, body mass index, and loan repayments. No sign-up, no clutter, just the answer.</p>
   </div>
 
   <div class="tool-grid">
-    <a class="tool-card" href="age.html">
-      <span class="icon">01 · Time</span>
-      <h3>Age Calculator</h3>
-      <p>Find your exact age in years, months, weeks, days, and hours from your date of birth.</p>
-      <span class="go">Open tool →</span>
+    <a class="tool-card" data-cat="time" href="age.html">
+      <span class="icon-badge">📅</span>
+      <span class="body">
+        <span class="icon">01 · Time</span>
+        <h3>Age Calculator</h3>
+        <p>Find your exact age in years, months, weeks, days, and hours from your date of birth.</p>
+        <span class="go">Open tool →</span>
+      </span>
+      <span class="deco">⏰</span>
     </a>
 
-    <a class="tool-card" href="bmi.html">
-      <span class="icon">02 · Health</span>
-      <h3>BMI Calculator</h3>
-      <p>Check your Body Mass Index from height and weight, with a clear healthy-range readout.</p>
-      <span class="go">Open tool →</span>
+    <a class="tool-card" data-cat="health" href="bmi.html">
+      <span class="icon-badge">❤️</span>
+      <span class="body">
+        <span class="icon">02 · Health</span>
+        <h3>BMI Calculator</h3>
+        <p>Check your Body Mass Index from height and weight, with a clear healthy-range readout.</p>
+        <span class="go">Open tool →</span>
+      </span>
+      <span class="deco">⚖️</span>
     </a>
 
-    <a class="tool-card" href="loan.html">
-      <span class="icon">03 · Finance</span>
-      <h3>Loan / EMI Calculator</h3>
-      <p>Work out monthly installments, total interest, and total repayment for any loan.</p>
-      <span class="go">Open tool →</span>
+    <a class="tool-card" data-cat="finance" href="loan.html">
+      <span class="icon-badge">🏦</span>
+      <span class="body">
+        <span class="icon">03 · Finance</span>
+        <h3>Loan / EMI Calculator</h3>
+        <p>Work out monthly installments, total interest, and total repayment for any loan.</p>
+        <span class="go">Open tool →</span>
+      </span>
+      <span class="deco">📈</span>
     </a>
   </div>
 
   <footer class="brand-footer">
-    <img src="assets/devntric-logo-paper.png" alt="Devntric logo">
-    <p class="app-name">AGE_BMI_LOAN CONVERTOR <span class="ver">v1.0.0</span></p>
+    <img src="assets/devntric-logo-white.png" alt="Devntric logo">
+    <p class="app-name">LIFECALC <span class="ver">v1.0.0</span></p>
     <p class="line">Developed by <a href="https://www.linkedin.com/in/mustafij55" target="_blank" rel="noopener">Mustafij Ahmed Ovi</a></p>
     <p class="line copyright">© 2026 All Rights Reserved. <a href="#">Devntric</a></p>
   </footer>
